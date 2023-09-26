@@ -1,0 +1,62 @@
+package com.jdbc_project;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+public class JdbcProject {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		String driver  = "com.mysql.cj.jdbc.Driver";
+		String url = "jdbc:mysql://localhost:3306/productdb";
+		String username = "root";
+		String password = "root";
+		
+		try {
+			Class.forName(driver);
+			
+			Connection conn = DriverManager.getConnection(url, username, password);
+			
+			Scanner sc = new Scanner(System.in);
+			System.out.println("Enter product id");
+			int pid = sc.nextInt();
+			
+			String sql = "select * from product where pid = ?";
+			
+			PreparedStatement pst = conn.prepareStatement(sql);
+			
+			pst.setInt(1, pid);
+			
+			ResultSet rs = pst.executeQuery();
+			
+			
+			
+			if(rs.next()) {
+				
+				System.out.println("pid \t pname \t price \t quantity");
+				System.out.println("----------------------------------------");
+				
+				int id = rs.getInt("pid");
+				String name = rs.getString("pname");
+				int price = rs.getInt("pcost");
+				int quantity = rs.getInt("pquantity");
+				
+				System.out.println(id+"\t "+name +"\t "+price+"\t "+quantity);
+			}
+			else {
+				System.out.println("No record found with id of "+pid);
+			}
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			System.out.println("Not found");
+		}
+		
+
+	}
+
+}
